@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace RevitWPFTemplate.Infrastructure.Base
+namespace CutSlab.Infrastructure.Base
 {
     internal abstract class Command : ICommand
     {
