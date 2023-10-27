@@ -10,8 +10,8 @@
         Background="#f0f0f0"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Height="450"
-        Width="350">
+        Height="600"
+        Width="600">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
@@ -78,12 +78,20 @@
                           GridLinesVisibility="Vertical"
                           VerticalGridLinesBrush="DarkGray"
                           AlternatingRowBackground="LightGray"
-                          Height="109"
-                          RowHeight="24">
+                          Height="400"
+                          RowHeight="50">
+                    <DataGrid.Resources>
+                        <Style TargetType="TextBlock"
+                               x:Key="WrapText">
+                            <Setter Property="TextWrapping"
+                                    Value="Wrap" />
+                        </Style>
+                    </DataGrid.Resources>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Верх балок"
                                             Binding="{Binding BeamTopLinesIds, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                                            Width="100" />
+                                            ElementStyle="{StaticResource WrapText}"
+                                            Width="150" />
                         <DataGridTemplateColumn Header="Выбрать верх балок"
                                                 Width="150">
                             <DataGridTemplateColumn.CellTemplate>
@@ -91,7 +99,7 @@
                                     <Button Content="Выбрать"
                                             Style="{StaticResource SelectButton}"
                                             Command="{Binding DataContext.SelectTopLinesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}"/>
+                                            CommandParameter="{Binding}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
