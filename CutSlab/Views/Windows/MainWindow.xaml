@@ -68,6 +68,48 @@
         </Style>
     </Window.Resources>
     <StackPanel>
-        
+        <GroupBox Header="Элементы подрезки"
+                  Style="{StaticResource BorderGroupStyle}">
+            <StackPanel>
+                <DataGrid Name="dataGrid"
+                          ItemsSource="{Binding CuttingSolidsCollection}"
+                          CanUserAddRows="False"
+                          AutoGenerateColumns="False"
+                          GridLinesVisibility="Vertical"
+                          VerticalGridLinesBrush="DarkGray"
+                          AlternatingRowBackground="LightGray"
+                          Height="109"
+                          RowHeight="24">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Верх балок"
+                                            Binding="{Binding BeamTopLinesIds, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                            Width="100" />
+                        <DataGridTemplateColumn Header="Выбрать верх балок"
+                                                Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Выбрать"
+                                            Style="{StaticResource SelectButton}"
+                                            Command="{Binding DataContext.SelectTopLinesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <UniformGrid Columns="2"
+                             Margin="0,2,0,0">
+                    <Button Style="{StaticResource SelectButton}"
+                            Content="Добавить"
+                            Command="{Binding AddCutSolidCommand}" />
+                    <Button Style="{StaticResource SelectButton}"
+                            Content="Удалить"
+                            Command="{Binding RemoveCutSolidCommand}" />
+                </UniformGrid>
+                <UniformGrid Columns="2"
+                             Margin="0,5,0,0">
+                </UniformGrid>
+            </StackPanel>
+        </GroupBox>
     </StackPanel>
 </Window>

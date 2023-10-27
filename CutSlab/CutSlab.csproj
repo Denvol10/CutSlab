@@ -58,6 +58,8 @@
     <Compile Include="Infrastructure\Base\Command.cs" />
     <Compile Include="Infrastructure\LambdaCommand.cs" />
     <Compile Include="Infrastructure\RevitCommand.cs" />
+    <Compile Include="Models\CuttingSolid.cs" />
+    <Compile Include="Models\Filters\DirectShapeClassFilter.cs" />
     <Compile Include="Models\RevitModelForfard.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -72,6 +74,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="result.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
