@@ -11,7 +11,7 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Height="600"
-        Width="600">
+        Width="500">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
@@ -88,21 +88,42 @@
                         </Style>
                     </DataGrid.Resources>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Верх балок"
-                                            Binding="{Binding BeamTopLinesIds, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                                            ElementStyle="{StaticResource WrapText}"
-                                            Width="150" />
-                        <DataGridTemplateColumn Header="Выбрать верх балок"
-                                                Width="150">
+                        <DataGridTemplateColumn Header=""
+                                                Width="80">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="Выбрать"
+                                    <Button Width="75"
+                                            Height="40"
                                             Style="{StaticResource SelectButton}"
+                                        HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
                                             Command="{Binding DataContext.SelectTopLinesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Верх балок"
+                                            Binding="{Binding BeamTopLinesIds, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                            ElementStyle="{StaticResource WrapText}"
+                                            Width="150" />
+                        <DataGridTemplateColumn Header=""
+                                                Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Width="75"
+                                            Height="40"
+                                            Style="{StaticResource SelectButton}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Command="{Binding DataContext.SelectTopLinesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Границы тела подрезки"
+                                            Binding="{Binding BeamTopLinesIds, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                            ElementStyle="{StaticResource WrapText}"
+                                            Width="150" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <UniformGrid Columns="2"
