@@ -130,6 +130,7 @@ namespace CutSlab.ViewModels
         private void OnCreateCutSolidsCommandExecuted(object parameter)
         {
             RevitModel.CreateCuttingSolid(CuttingSolidsCollection);
+            RevitModel.CreateSolidBetweenBeams(CuttingSolidsCollection);
         }
 
         private bool CanCreateCutSolidsCommandExecute(object parameter)

@@ -56,6 +56,27 @@ namespace CutSlab
             }
         }
 
+        public void CreateSolidBetweenBeams(IEnumerable<CuttingSolid> cuttingSolids)
+        {
+            for (int i = 0; i < cuttingSolids.Count() - 1; i ++)
+            {
+                var referenceArrayArray = new ReferenceArrayArray();
+
+                var firstProfile = cuttingSolids.ElementAt(i).EndProfile;
+                var secondProfile = cuttingSolids.ElementAt(i + 1).StartProfile;
+
+                referenceArrayArray.Append(firstProfile);
+                referenceArrayArray.Append(secondProfile);
+
+                using (Transaction trans = new Transaction(Doc, "Form Between Beams Created"))
+                {
+                    trans.Start();
+                    var loftForm = Doc.FamilyCreate.NewLoftForm(true, referenceArrayArray);
+                    trans.Commit();
+                }
+            }
+        }
+
         // Метод получения строки с ElementId
         public string ElementIdToString(IEnumerable<Element> elements)
         {

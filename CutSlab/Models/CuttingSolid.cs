@@ -159,6 +159,7 @@ namespace CutSlab.Models
                 referencePointsArray.Append(points.get_Item(i + 1));
 
                 var topLine = doc.FamilyCreate.NewCurveByPoints(referencePointsArray);
+                topLine.IsReferenceLine = true;
 
                 referenceArray.Append(topLine.GeometryCurve.Reference);
             }
@@ -176,18 +177,21 @@ namespace CutSlab.Models
             side1Points.Append(points.get_Item(0));
             side1Points.Append(secondBaseReferencePoint);
             var sideLine1 = doc.FamilyCreate.NewCurveByPoints(side1Points);
+            sideLine1.IsReferenceLine = true;
             referenceArray.Append(sideLine1.GeometryCurve.Reference);
 
             var side2Points = new ReferencePointArray();
             side2Points.Append(points.get_Item(points.Size - 1));
             side2Points.Append(endBaseReferencePoint);
             var sideLine2 = doc.FamilyCreate.NewCurveByPoints(side2Points);
+            sideLine2.IsReferenceLine = true;
             referenceArray.Append(sideLine2.GeometryCurve.Reference);
 
             var baseSidePoints = new ReferencePointArray();
             baseSidePoints.Append(secondBaseReferencePoint);
             baseSidePoints.Append(endBaseReferencePoint);
             var baseLine = doc.FamilyCreate.NewCurveByPoints(baseSidePoints);
+            baseLine.IsReferenceLine = true;
             referenceArray.Append(baseLine.GeometryCurve.Reference);
 
             return referenceArray;
