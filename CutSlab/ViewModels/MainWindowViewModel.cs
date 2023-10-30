@@ -124,6 +124,20 @@ namespace CutSlab.ViewModels
         }
         #endregion
 
+        #region Создать тела подрезки
+        public ICommand CreateCutSolidsCommand { get; }
+
+        private void OnCreateCutSolidsCommandExecuted(object parameter)
+        {
+            RevitModel.CreateCuttingSolid(CuttingSolidsCollection);
+        }
+
+        private bool CanCreateCutSolidsCommandExecute(object parameter)
+        {
+            return true;
+        }
+        #endregion
+
         #endregion
 
 
@@ -139,6 +153,8 @@ namespace CutSlab.ViewModels
             SelectTopLinesCommand = new LambdaCommand(OnSelectTopLinesCommandExecuted, CanSelectTopLinesCommandExecute);
 
             SelectBoundLinesCommand = new LambdaCommand(OnSelectBoundLinesCommandExecuted, CanSelectBoundLinesCommandExecute);
+
+            CreateCutSolidsCommand = new LambdaCommand(OnCreateCutSolidsCommandExecuted, CanCreateCutSolidsCommandExecute);
 
             AddCutSolidCommand = new LambdaCommand(OnAddCutSolidCommandExecuted, CanAddCutSolidCommandExecute);
 

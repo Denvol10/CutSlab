@@ -11,6 +11,7 @@ using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.DB.Architecture;
 using System.Collections.ObjectModel;
 using CutSlab.Models.Filters;
+using CutSlab.Models;
 
 namespace CutSlab
 {
@@ -45,6 +46,14 @@ namespace CutSlab
             var lines = references.Select(r => Doc.GetElement(r)).OfType<ModelLine>().ToList();
 
             return lines;
+        }
+
+        public void CreateCuttingSolid(IEnumerable<CuttingSolid> cuttingSolids)
+        {
+            foreach (var solid in cuttingSolids)
+            {
+                solid.CreateTestTopLines(Doc);
+            }
         }
 
         // Метод получения строки с ElementId
