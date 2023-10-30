@@ -92,10 +92,12 @@ namespace CutSlab.Models
             var startPoints = topLines.Select(l => LinePlaneIntersection(l, startPlane, out _));
             var endPoints = topLines.Select(l => LinePlaneIntersection(l, endPlane, out _));
 
-            using (Transaction trans = new Transaction(doc, "Create Test Points"))
+            using (Transaction trans = new Transaction(doc, "Create Form Under Beams"))
             {
                 trans.Start();
                 ReferencePointArray refStartPoints = new ReferencePointArray();
+                ReferenceArrayArray profileArray = new ReferenceArrayArray();
+
                 foreach (var point in startPoints)
                 {
                     refStartPoints.Append(doc.FamilyCreate.NewReferencePoint(point));
@@ -105,6 +107,7 @@ namespace CutSlab.Models
                 if (isSortedStartPoints)
                 {
                     StartProfile = CreateProfileByPoints(doc, refStartPoints);
+                    profileArray.Append(StartProfile);
                 }
 
                 ReferencePointArray refEndPoints = new ReferencePointArray();
@@ -117,7 +120,10 @@ namespace CutSlab.Models
                 if (isSortedEndPoints)
                 {
                     EndProfile = CreateProfileByPoints(doc, refEndPoints);
+                    profileArray.Append(EndProfile);
                 }
+
+                var loftForm = doc.FamilyCreate.NewLoftForm(true, profileArray);
 
                 trans.Commit();
             }
