@@ -59,6 +59,24 @@ namespace CutSlab.Models
         }
         #endregion
 
+        #region Начальный профиль тела выдавливания
+        private ReferenceArray _startProfile;
+        public ReferenceArray StartProfile
+        {
+            get => _startProfile;
+            set => _startProfile = value;
+        }
+        #endregion
+
+        #region Конечный профиль тела выдавливания
+        private ReferenceArray _endProfile;
+        public ReferenceArray EndProfile
+        {
+            get => _endProfile;
+            set => _endProfile = value;
+        }
+        #endregion
+
         public CuttingSolid() 
         {
             BeamToplines = new List<DirectShape>();
@@ -83,10 +101,22 @@ namespace CutSlab.Models
                     refStartPoints.Append(doc.FamilyCreate.NewReferencePoint(point));
                 }
 
-                bool isSorted = CurveByPoints.SortPoints(refStartPoints);
-                if (isSorted)
+                bool isSortedStartPoints = CurveByPoints.SortPoints(refStartPoints);
+                if (isSortedStartPoints)
                 {
-                    CreateProfileByPoints(doc, refStartPoints);
+                    StartProfile = CreateProfileByPoints(doc, refStartPoints);
+                }
+
+                ReferencePointArray refEndPoints = new ReferencePointArray();
+                foreach (var point in endPoints)
+                {
+                    refEndPoints.Append(doc.FamilyCreate.NewReferencePoint(point));
+                }
+
+                bool isSortedEndPoints = CurveByPoints.SortPoints(refEndPoints);
+                if (isSortedEndPoints)
+                {
+                    EndProfile = CreateProfileByPoints(doc, refEndPoints);
                 }
 
                 trans.Commit();
@@ -112,15 +142,19 @@ namespace CutSlab.Models
             return plane;
         }
 
-        private void CreateProfileByPoints(Document doc, ReferencePointArray points)
+        private ReferenceArray CreateProfileByPoints(Document doc, ReferencePointArray points)
         {
+            var referenceArray = new ReferenceArray();
+
             for (int i = 0; i < points.Size - 1; i ++)
             {
                 var referencePointsArray = new ReferencePointArray();
                 referencePointsArray.Append(points.get_Item(i));
                 referencePointsArray.Append(points.get_Item(i + 1));
 
-                doc.FamilyCreate.NewCurveByPoints(referencePointsArray);
+                var topLine = doc.FamilyCreate.NewCurveByPoints(referencePointsArray);
+
+                referenceArray.Append(topLine.GeometryCurve.Reference);
             }
 
             XYZ firstPoint = points.get_Item(0).Position;
@@ -136,16 +170,21 @@ namespace CutSlab.Models
             side1Points.Append(points.get_Item(0));
             side1Points.Append(secondBaseReferencePoint);
             var sideLine1 = doc.FamilyCreate.NewCurveByPoints(side1Points);
+            referenceArray.Append(sideLine1.GeometryCurve.Reference);
 
             var side2Points = new ReferencePointArray();
             side2Points.Append(points.get_Item(points.Size - 1));
             side2Points.Append(endBaseReferencePoint);
             var sideLine2 = doc.FamilyCreate.NewCurveByPoints(side2Points);
+            referenceArray.Append(sideLine2.GeometryCurve.Reference);
 
             var baseSidePoints = new ReferencePointArray();
             baseSidePoints.Append(secondBaseReferencePoint);
             baseSidePoints.Append(endBaseReferencePoint);
             var baseLine = doc.FamilyCreate.NewCurveByPoints(baseSidePoints);
+            referenceArray.Append(baseLine.GeometryCurve.Reference);
+
+            return referenceArray;
         }
 
         /* Пересечение линии и плоскости
