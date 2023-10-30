@@ -38,6 +38,15 @@ namespace CutSlab
             return directShapeLines;
         }
 
+        public List<ModelLine> GetBoundLines()
+        {
+            Selection sel = Uiapp.ActiveUIDocument.Selection;
+            var references = sel.PickObjects(ObjectType.Element, new ModelLineClassFilter(), "Select Bound Lines");
+            var lines = references.Select(r => Doc.GetElement(r)).OfType<ModelLine>().ToList();
+
+            return lines;
+        }
+
         // Метод получения строки с ElementId
         public string ElementIdToString(IEnumerable<Element> elements)
         {

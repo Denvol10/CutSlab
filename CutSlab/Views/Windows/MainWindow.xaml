@@ -95,7 +95,7 @@
                                     <Button Width="75"
                                             Height="40"
                                             Style="{StaticResource SelectButton}"
-                                        HorizontalAlignment="Center"
+                                            HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Command="{Binding DataContext.SelectTopLinesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}" />
@@ -115,13 +115,13 @@
                                             Style="{StaticResource SelectButton}"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Command="{Binding DataContext.SelectTopLinesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            Command="{Binding DataContext.SelectBoundLinesCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                             CommandParameter="{Binding}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Границы тела подрезки"
-                                            Binding="{Binding BeamTopLinesIds, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                            Binding="{Binding BoundLinesIds, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                             ElementStyle="{StaticResource WrapText}"
                                             Width="150" />
                     </DataGrid.Columns>

@@ -97,19 +97,28 @@ namespace CutSlab.ViewModels
             CuttingSolid cuttingSolid = parameter as CuttingSolid;
             cuttingSolid.BeamToplines = RevitModel.GetTopLines();
             cuttingSolid.BeamTopLinesIds = RevitModel.ElementIdToString(cuttingSolid.BeamToplines);
-
-            string resultPath = @"O:\Revit Infrastructure Tools\CutSlab\CutSlab\result.txt";
-            using (StreamWriter sw = new StreamWriter(resultPath, false, Encoding.Default))
-            {
-                foreach (var lines in cuttingSolid.BeamToplines)
-                {
-                    sw.WriteLine(lines);
-                }
-            }
             RevitCommand.mainView.ShowDialog();
         }
 
         private bool CanSelectTopLinesCommandExecute(object paramter)
+        {
+            return true;
+        }
+        #endregion
+
+        #region Выбрать границы подрезки
+        public ICommand SelectBoundLinesCommand { get; }
+
+        private void OnSelectBoundLinesCommandExecuted(object parameter)
+        {
+            RevitCommand.mainView.Hide();
+            CuttingSolid cuttingSolid = parameter as CuttingSolid;
+            cuttingSolid.BoundLines = RevitModel.GetBoundLines();
+            cuttingSolid.BoundLinesIds = RevitModel.ElementIdToString(cuttingSolid.BoundLines);
+            RevitCommand.mainView.ShowDialog();
+        }
+
+        private bool CanSelectBoundLinesCommandExecute(object paramter)
         {
             return true;
         }
@@ -128,6 +137,8 @@ namespace CutSlab.ViewModels
             #region Команды
 
             SelectTopLinesCommand = new LambdaCommand(OnSelectTopLinesCommandExecuted, CanSelectTopLinesCommandExecute);
+
+            SelectBoundLinesCommand = new LambdaCommand(OnSelectBoundLinesCommandExecuted, CanSelectBoundLinesCommandExecute);
 
             AddCutSolidCommand = new LambdaCommand(OnAddCutSolidCommandExecuted, CanAddCutSolidCommandExecute);
 

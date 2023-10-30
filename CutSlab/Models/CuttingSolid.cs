@@ -11,6 +11,7 @@ namespace CutSlab.Models
 {
     public class CuttingSolid : INotifyPropertyChanged
     {
+        #region Верх балок
         private string _beamTopLinesIds;
         public string BeamTopLinesIds
         {
@@ -32,10 +33,36 @@ namespace CutSlab.Models
                 _beamTopLines = value;
             }
         }
+        #endregion
+
+        #region Границы подрезки
+        private string _boundLinesIds;
+        public string BoundLinesIds
+        {
+            get => _boundLinesIds;
+            set
+            {
+                _boundLinesIds = value;
+                OnPropertyChanged("BoundLinesIds");
+            }
+        }
+
+        private List<ModelLine> _boundLines;
+
+        public List<ModelLine> BoundLines
+        {
+            get => _boundLines;
+            set
+            {
+                _boundLines = value;
+            }
+        }
+        #endregion
 
         public CuttingSolid() 
         {
             BeamToplines = new List<DirectShape>();
+            BoundLines = new List<ModelLine>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
