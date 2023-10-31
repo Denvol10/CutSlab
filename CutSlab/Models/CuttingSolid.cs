@@ -60,20 +60,38 @@ namespace CutSlab.Models
         #endregion
 
         #region Начальный профиль тела выдавливания
-        private ReferenceArray _startProfile;
-        public ReferenceArray StartProfile
+        private ReferenceArray _startMainProfile;
+        public ReferenceArray StartMainProfile
         {
-            get => _startProfile;
-            set => _startProfile = value;
+            get => _startMainProfile;
+            set => _startMainProfile = value;
         }
         #endregion
 
         #region Конечный профиль тела выдавливания
-        private ReferenceArray _endProfile;
-        public ReferenceArray EndProfile
+        private ReferenceArray _endMainProfile;
+        public ReferenceArray EndMainProfile
         {
-            get => _endProfile;
-            set => _endProfile = value;
+            get => _endMainProfile;
+            set => _endMainProfile = value;
+        }
+        #endregion
+
+        #region Начальный профиль промежуточного тела
+        private ReferenceArray _startTransitProfile;
+        public ReferenceArray StartTransitProfile
+        {
+            get => _startTransitProfile;
+            set => _startTransitProfile = value;
+        }
+        #endregion
+
+        #region Конечный профиль промежуточного тела
+        private ReferenceArray _endTransitProfile;
+        public ReferenceArray EndTransitProfile
+        {
+            get => _endTransitProfile;
+            set => _endTransitProfile = value;
         }
         #endregion
 
@@ -83,7 +101,7 @@ namespace CutSlab.Models
             BoundLines = new List<ModelLine>();
         }
 
-        public void CreateTestTopLines(Document doc)
+        public void CreateCutSolidForm(Document doc)
         {
             Plane startPlane = GetPlaneByLine(BoundLines.First());
             Plane endPlane = GetPlaneByLine(BoundLines.Last());
@@ -106,8 +124,9 @@ namespace CutSlab.Models
                 bool isSortedStartPoints = CurveByPoints.SortPoints(refStartPoints);
                 if (isSortedStartPoints)
                 {
-                    StartProfile = CreateProfileByPoints(doc, refStartPoints);
-                    profileArray.Append(StartProfile);
+                    StartMainProfile = CreateMainProfileByPoints(doc, refStartPoints);
+                    StartTransitProfile = CreateTransitProfileByPoints(doc, refStartPoints);
+                    profileArray.Append(StartMainProfile);
                 }
 
                 ReferencePointArray refEndPoints = new ReferencePointArray();
@@ -119,11 +138,12 @@ namespace CutSlab.Models
                 bool isSortedEndPoints = CurveByPoints.SortPoints(refEndPoints);
                 if (isSortedEndPoints)
                 {
-                    EndProfile = CreateProfileByPoints(doc, refEndPoints);
-                    profileArray.Append(EndProfile);
+                    EndMainProfile = CreateMainProfileByPoints(doc, refEndPoints);
+                    EndTransitProfile = CreateTransitProfileByPoints(doc, refEndPoints);
+                    profileArray.Append(EndMainProfile);
                 }
 
-                var loftForm = doc.FamilyCreate.NewLoftForm(true, profileArray);
+                var loftForm = doc.FamilyCreate.NewLoftForm(false, profileArray);
 
                 trans.Commit();
             }
@@ -148,7 +168,7 @@ namespace CutSlab.Models
             return plane;
         }
 
-        private ReferenceArray CreateProfileByPoints(Document doc, ReferencePointArray points)
+        private ReferenceArray CreateMainProfileByPoints(Document doc, ReferencePointArray points)
         {
             var referenceArray = new ReferenceArray();
 
@@ -159,7 +179,6 @@ namespace CutSlab.Models
                 referencePointsArray.Append(points.get_Item(i + 1));
 
                 var topLine = doc.FamilyCreate.NewCurveByPoints(referencePointsArray);
-                topLine.IsReferenceLine = true;
 
                 referenceArray.Append(topLine.GeometryCurve.Reference);
             }
@@ -177,25 +196,76 @@ namespace CutSlab.Models
             side1Points.Append(points.get_Item(0));
             side1Points.Append(secondBaseReferencePoint);
             var sideLine1 = doc.FamilyCreate.NewCurveByPoints(side1Points);
-            sideLine1.IsReferenceLine = true;
             referenceArray.Append(sideLine1.GeometryCurve.Reference);
 
             var side2Points = new ReferencePointArray();
             side2Points.Append(points.get_Item(points.Size - 1));
             side2Points.Append(endBaseReferencePoint);
             var sideLine2 = doc.FamilyCreate.NewCurveByPoints(side2Points);
-            sideLine2.IsReferenceLine = true;
             referenceArray.Append(sideLine2.GeometryCurve.Reference);
 
             var baseSidePoints = new ReferencePointArray();
             baseSidePoints.Append(secondBaseReferencePoint);
             baseSidePoints.Append(endBaseReferencePoint);
             var baseLine = doc.FamilyCreate.NewCurveByPoints(baseSidePoints);
-            baseLine.IsReferenceLine = true;
             referenceArray.Append(baseLine.GeometryCurve.Reference);
 
             return referenceArray;
         }
+
+        private ReferenceArray CreateTransitProfileByPoints(Document doc, ReferencePointArray points)
+        {
+            var referenceArray = new ReferenceArray();
+
+            XYZ firstPoint = points.get_Item(0).Position;
+            XYZ fourthPoint = points.get_Item(points.Size - 1).Position;
+            XYZ firstBasePoint = new XYZ(firstPoint.X, firstPoint.Y, 0);
+            XYZ fourthBasePoint = new XYZ(fourthPoint.X, fourthPoint.Y, 0);
+
+            for (int i = 0; i < points.Size - 1; i++)
+            {
+                var referencePointsArray = new ReferencePointArray();
+
+                XYZ point1 = points.get_Item(i).Position;
+                XYZ point2 = points.get_Item(i + 1).Position;
+
+                var refPoint1 = doc.FamilyCreate.NewReferencePoint(point1);
+                var refPoint2 = doc.FamilyCreate.NewReferencePoint(point2);
+
+                referencePointsArray.Append(refPoint1);
+                referencePointsArray.Append(refPoint2);
+
+                var topLine = doc.FamilyCreate.NewCurveByPoints(referencePointsArray);
+
+                referenceArray.Append(topLine.GeometryCurve.Reference);
+            }
+
+            var firstRefPoint = doc.FamilyCreate.NewReferencePoint(firstPoint);
+            var fourthRefPoint = doc.FamilyCreate.NewReferencePoint(fourthPoint);
+            var firstBaseRefPoint = doc.FamilyCreate.NewReferencePoint(firstBasePoint);
+            var fourthBaseRefPoint = doc.FamilyCreate.NewReferencePoint(fourthBasePoint);
+
+            var side1Points = new ReferencePointArray();
+            side1Points.Append(firstRefPoint);
+            side1Points.Append(firstBaseRefPoint);
+            var side1Line = doc.FamilyCreate.NewCurveByPoints(side1Points);
+            referenceArray.Append(side1Line.GeometryCurve.Reference);
+
+            var side2Points = new ReferencePointArray();
+            side2Points.Append(fourthRefPoint);
+            side2Points.Append(fourthBaseRefPoint);
+            var side2Line = doc.FamilyCreate.NewCurveByPoints(side2Points);
+            referenceArray.Append(side2Line.GeometryCurve.Reference);
+
+            var basePoints = new ReferencePointArray();
+            basePoints.Append(firstBaseRefPoint);
+            basePoints.Append(fourthBaseRefPoint);
+            var baseLine = doc.FamilyCreate.NewCurveByPoints(basePoints);
+            referenceArray.Append(baseLine.GeometryCurve.Reference);
+
+            return referenceArray;
+        }
+
 
         /* Пересечение линии и плоскости
         * (преобразует линию в вектор, поэтому пересекает любую линию не параллельную плоскости)

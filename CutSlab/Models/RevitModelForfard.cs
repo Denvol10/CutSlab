@@ -52,18 +52,20 @@ namespace CutSlab
         {
             foreach (var solid in cuttingSolids)
             {
-                solid.CreateTestTopLines(Doc);
+                solid.CreateCutSolidForm(Doc);
             }
         }
 
         public void CreateSolidBetweenBeams(IEnumerable<CuttingSolid> cuttingSolids)
         {
+            double offset = UnitUtils.ConvertToInternalUnits(1, UnitTypeId.Millimeters);
+
             for (int i = 0; i < cuttingSolids.Count() - 1; i ++)
             {
                 var referenceArrayArray = new ReferenceArrayArray();
 
-                var firstProfile = cuttingSolids.ElementAt(i).EndProfile;
-                var secondProfile = cuttingSolids.ElementAt(i + 1).StartProfile;
+                var firstProfile = cuttingSolids.ElementAt(i).EndTransitProfile;
+                var secondProfile = cuttingSolids.ElementAt(i + 1).StartTransitProfile;
 
                 referenceArrayArray.Append(firstProfile);
                 referenceArrayArray.Append(secondProfile);
@@ -71,7 +73,10 @@ namespace CutSlab
                 using (Transaction trans = new Transaction(Doc, "Form Between Beams Created"))
                 {
                     trans.Start();
-                    var loftForm = Doc.FamilyCreate.NewLoftForm(true, referenceArrayArray);
+                    var loftForm = Doc.FamilyCreate.NewLoftForm(false, referenceArrayArray);
+                    Location formLocation = loftForm.Location;
+                    formLocation.Move((XYZ.BasisZ * offset).Negate());
+
                     trans.Commit();
                 }
             }
