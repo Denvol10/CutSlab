@@ -238,6 +238,8 @@ namespace CutSlab.Models
                 referencePointsArray.Append(refPoint2);
 
                 var topLine = doc.FamilyCreate.NewCurveByPoints(referencePointsArray);
+                Parameter isVisible = topLine.get_Parameter(BuiltInParameter.IS_VISIBLE_PARAM);
+                isVisible.Set(0);
 
                 referenceArray.Append(topLine.GeometryCurve.Reference);
             }
@@ -251,18 +253,24 @@ namespace CutSlab.Models
             side1Points.Append(firstRefPoint);
             side1Points.Append(firstBaseRefPoint);
             var side1Line = doc.FamilyCreate.NewCurveByPoints(side1Points);
+            Parameter isSideLine1Visible = side1Line.get_Parameter(BuiltInParameter.IS_VISIBLE_PARAM);
+            isSideLine1Visible.Set(0);
             referenceArray.Append(side1Line.GeometryCurve.Reference);
 
             var side2Points = new ReferencePointArray();
             side2Points.Append(fourthRefPoint);
             side2Points.Append(fourthBaseRefPoint);
             var side2Line = doc.FamilyCreate.NewCurveByPoints(side2Points);
+            Parameter isSideLine2Visible = side2Line.get_Parameter(BuiltInParameter.IS_VISIBLE_PARAM);
+            isSideLine2Visible.Set(0);
             referenceArray.Append(side2Line.GeometryCurve.Reference);
 
             var basePoints = new ReferencePointArray();
             basePoints.Append(firstBaseRefPoint);
             basePoints.Append(fourthBaseRefPoint);
             var baseLine = doc.FamilyCreate.NewCurveByPoints(basePoints);
+            Parameter isBaseLineVisible = baseLine.get_Parameter(BuiltInParameter.IS_VISIBLE_PARAM);
+            isBaseLineVisible.Set(0);
             referenceArray.Append(baseLine.GeometryCurve.Reference);
 
             return referenceArray;
