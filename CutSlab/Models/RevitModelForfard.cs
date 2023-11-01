@@ -74,8 +74,8 @@ namespace CutSlab
                 {
                     trans.Start();
                     var loftForm = Doc.FamilyCreate.NewLoftForm(false, referenceArrayArray);
-                    Location formLocation = loftForm.Location;
-                    formLocation.Move((XYZ.BasisZ * offset).Negate());
+                    //Location formLocation = loftForm.Location;
+                    //formLocation.Move((XYZ.BasisZ * offset).Negate());
 
                     trans.Commit();
                 }

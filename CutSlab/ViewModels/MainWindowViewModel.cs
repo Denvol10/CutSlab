@@ -131,9 +131,29 @@ namespace CutSlab.ViewModels
         {
             RevitModel.CreateCuttingSolid(CuttingSolidsCollection);
             RevitModel.CreateSolidBetweenBeams(CuttingSolidsCollection);
+            RevitCommand.mainView.Close();
         }
 
         private bool CanCreateCutSolidsCommandExecute(object parameter)
+        {
+            if (CuttingSolidsCollection.LastOrDefault() is null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
+
+        #region Закрыть окно
+        public ICommand CloseWindowCommand { get; }
+
+        private void OnCloseWindowCommandExecuted(object parameter)
+        {
+            RevitCommand.mainView.Close();
+        }
+
+        private bool CanCloseWindowCommandExecute(object parameter)
         {
             return true;
         }
@@ -160,6 +180,8 @@ namespace CutSlab.ViewModels
             AddCutSolidCommand = new LambdaCommand(OnAddCutSolidCommandExecuted, CanAddCutSolidCommandExecute);
 
             RemoveCutSolidCommand = new LambdaCommand(OnRemoveCutSolidCommandExecuted, CanRemoveCutSolidCommandExecute);
+
+            CloseWindowCommand = new LambdaCommand(OnCloseWindowCommandExecuted, CanCloseWindowCommandExecute);
 
             #endregion
         }

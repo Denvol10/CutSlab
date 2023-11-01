@@ -216,18 +216,20 @@ namespace CutSlab.Models
         private ReferenceArray CreateTransitProfileByPoints(Document doc, ReferencePointArray points)
         {
             var referenceArray = new ReferenceArray();
+            double offset = UnitUtils.ConvertToInternalUnits(2, UnitTypeId.Millimeters);
 
-            XYZ firstPoint = points.get_Item(0).Position;
-            XYZ fourthPoint = points.get_Item(points.Size - 1).Position;
-            XYZ firstBasePoint = new XYZ(firstPoint.X, firstPoint.Y, 0);
-            XYZ fourthBasePoint = new XYZ(fourthPoint.X, fourthPoint.Y, 0);
+            XYZ firstPoint = points.get_Item(0).Position - XYZ.BasisZ * offset;
+            XYZ fourthPoint = points.get_Item(points.Size - 1).Position - XYZ.BasisZ * offset;
+            XYZ firstBasePoint = new XYZ(firstPoint.X, firstPoint.Y, -offset);
+            XYZ fourthBasePoint = new XYZ(fourthPoint.X, fourthPoint.Y, -offset);
+
 
             for (int i = 0; i < points.Size - 1; i++)
             {
                 var referencePointsArray = new ReferencePointArray();
 
-                XYZ point1 = points.get_Item(i).Position;
-                XYZ point2 = points.get_Item(i + 1).Position;
+                XYZ point1 = points.get_Item(i).Position - XYZ.BasisZ * offset;
+                XYZ point2 = points.get_Item(i + 1).Position - XYZ.BasisZ * offset;
 
                 var refPoint1 = doc.FamilyCreate.NewReferencePoint(point1);
                 var refPoint2 = doc.FamilyCreate.NewReferencePoint(point2);

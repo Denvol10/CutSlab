@@ -10,7 +10,7 @@
         Background="#f0f0f0"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Height="600"
+        Height="564"
         Width="500">
     <Window.DataContext>
         <vm:MainWindowViewModel />
@@ -103,7 +103,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Верх балок"
+                        <DataGridTextColumn Header="Линии верха балок"
                                             Binding="{Binding BeamTopLinesIds, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                             ElementStyle="{StaticResource WrapText}"
                                             Width="150" />
